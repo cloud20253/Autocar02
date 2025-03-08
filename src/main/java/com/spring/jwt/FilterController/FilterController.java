@@ -38,6 +38,4 @@ public class FilterController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
         }
     }
-
-
 }
