@@ -5,9 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +23,13 @@ public interface VehicleRegRepository extends JpaRepository<VehicleReg, Integer>
 
         @Query("SELECT v FROM VehicleReg v WHERE LOWER(REPLACE(v.status, ' ', '')) IN :statuses")
         List<VehicleReg> findByNormalizedStatusIn(@Param("statuses") List<String> statuses);
-    }
+
+    @Query("SELECT v FROM VehicleReg v WHERE v.vehicleRegId IN (" +
+            "SELECT MIN(v2.vehicleRegId) FROM VehicleReg v2 " +
+            "WHERE LOWER(v2.vehicleNumber) LIKE LOWER(CONCAT('%', :query, '%')) " +
+            "GROUP BY LOWER(v2.vehicleNumber))")
+    List<VehicleReg> findBySearchQuery(@Param("query") String query);
+
+}
 
 

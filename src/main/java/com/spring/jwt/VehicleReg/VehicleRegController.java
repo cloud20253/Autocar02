@@ -35,6 +35,12 @@ public class VehicleRegController {
         }
     }
 
+    @GetMapping("/search")
+    public List<VehicleRegDto> searchVehicles(@RequestParam String query) {
+        return vehicleRegService.searchVehicles(query);
+    }
+
+
     @PostMapping("/add")
     public ResponseEntity<ResponseDto<VehicleRegDto>> createVehicleReg(@RequestBody VehicleRegDto vehicleRegDto) {
         try {

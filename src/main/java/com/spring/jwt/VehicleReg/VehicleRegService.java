@@ -20,4 +20,6 @@ public interface VehicleRegService {
     public List<VehicleRegDto> getByDateRange(String startDate, String endDate);
 
     VehicleRegDto getVehicleRegByAppointmentId(Integer appointmentId);
+
+    List<VehicleRegDto> searchVehicles(String query);
 }
