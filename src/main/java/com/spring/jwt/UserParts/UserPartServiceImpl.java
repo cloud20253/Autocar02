@@ -57,6 +57,7 @@ public class UserPartServiceImpl implements UserPartService {
                         .buyingPrice(projection.getBuyingPrice())
                         .updateAt(projection.getUpdateAt())
                         .description(projection.getDescription())
+                        .vendor(projection.getVendor())
                         .build())
                 .getContent();
 

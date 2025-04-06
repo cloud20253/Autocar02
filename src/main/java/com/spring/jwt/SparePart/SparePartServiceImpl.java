@@ -39,7 +39,7 @@ public class SparePartServiceImpl implements SparePartService {
     public static final Logger logger = LoggerFactory.getLogger(SparePartServiceImpl.class);
 
     @Override
-    public BaseResponseDTO addPart(String partName, String description, String manufacturer, Long price, String partNumber, List<MultipartFile> photos,Integer sGST,Integer cGST,Integer totalGST,Integer buyingPrice) {
+    public BaseResponseDTO addPart(String partName, String description, String manufacturer, Long price, String partNumber, List<MultipartFile> photos,Integer sGST,Integer cGST,Integer totalGST,Integer buyingPrice,String vendor) {
         Optional<SparePart> existingPart = sparePartRepo.findByPartNumberAndManufacturer(partNumber, manufacturer);
         if (existingPart.isPresent()) {
             throw new BadRequestException("Part with part number " + partNumber + " already exists for manufacturer " + manufacturer);
@@ -68,6 +68,7 @@ public class SparePartServiceImpl implements SparePartService {
                     .cGST(cGST)
                     .buyingPrice(buyingPrice)
                     .totalGST(totalGST)
+                    .vendor(vendor)
                     .build();
 
 
@@ -87,6 +88,7 @@ public class SparePartServiceImpl implements SparePartService {
                     .cGST(cGST)
                     .buyingPrice(buyingPrice)
                     .totalGST(totalGST)
+                    .vendor(vendor)
                     .build();
 
             userPartRepo.save(userPart);
@@ -122,6 +124,7 @@ public class SparePartServiceImpl implements SparePartService {
                 .cGST(sparePart.getCGST())
                 .sGST(sparePart.getSGST())
                 .buyingPrice(sparePart.getBuyingPrice())
+                .vendor(sparePart.getVendor())
                 .build()
         ).orElse(null);
     }
@@ -166,9 +169,7 @@ public class SparePartServiceImpl implements SparePartService {
 
 
     @Override
-    @Transactional
-    public SparePartDto updatePart(Integer id, String partName, String description, String manufacturer, Long price, String partNumber, List<MultipartFile> photos,Integer sGST,Integer cGST,Integer totalGST,Integer buyingPrice) {
-
+    public SparePartDto updatePart(Integer id, String partName, String description, String manufacturer, Long price, String partNumber, List<MultipartFile> photos,Integer sGST,Integer cGST,Integer totalGST,Integer buyingPrice,String vendor) {
         SparePart sparePart = sparePartRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Spare part not found"));
 
@@ -181,9 +182,11 @@ public class SparePartServiceImpl implements SparePartService {
         Optional.ofNullable(sGST).ifPresent(sparePart::setSGST);
         Optional.ofNullable(totalGST).ifPresent(sparePart::setTotalGST);
         Optional.ofNullable(buyingPrice).ifPresent(sparePart::setBuyingPrice);
+        Optional.ofNullable(vendor).ifPresent(sparePart::setVendor);
 
         if (photos != null && !photos.isEmpty()) {
             try {
+                // Compress new photos
                 List<byte[]> compressedPhotos = photos.stream()
                         .map(file -> {
                             try {
@@ -217,27 +220,12 @@ public class SparePartServiceImpl implements SparePartService {
             logger.warn("No photos provided for update. Skipping photo update.");
         }
 
-
         SparePart updatedPart = sparePartRepo.save(sparePart);
-
-        userPartRepo.findBySparePart_SparePartId(updatedPart.getSparePartId()).ifPresent(userPart -> {
-            Optional.ofNullable(partName).ifPresent(userPart::setPartName);
-            Optional.ofNullable(description).ifPresent(userPart::setDescription);
-            Optional.ofNullable(manufacturer).ifPresent(userPart::setManufacturer);
-            Optional.ofNullable(price).ifPresent(userPart::setPrice);
-            Optional.ofNullable(partNumber).ifPresent(userPart::setPartNumber);
-            Optional.ofNullable(cGST).ifPresent(userPart::setCGST);
-            Optional.ofNullable(sGST).ifPresent(userPart::setSGST);
-            Optional.ofNullable(totalGST).ifPresent(userPart::setTotalGST);
-            Optional.ofNullable(buyingPrice).ifPresent(userPart::setBuyingPrice);
-            userPartRepo.save(userPart);
-        });
 
         logger.info("Updated spare part: {}", updatedPart);
 
         return sparePartMapper.toDto(updatedPart);
     }
-
     @Transactional
     @Override
     public BaseResponseDTO deleteSparePartById(Integer id, Integer photoIndex) {

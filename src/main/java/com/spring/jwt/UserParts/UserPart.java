@@ -60,5 +60,8 @@ public class UserPart {
     @Column
     private Integer buyingPrice;
 
+    @Column
+    private String vendor;
+
 
 }
