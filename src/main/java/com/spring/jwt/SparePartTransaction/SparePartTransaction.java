@@ -70,6 +70,12 @@ public class SparePartTransaction {
     @Column
     private Integer cGST;
 
+    @Column(name = "InvoiceNumber")
+    private Integer invoiceNumber;
+
+    @Column(name = "JobCardNumber")
+    private Integer jobCardNumber;
+
     @Column
     private Integer sGST;
 

@@ -95,8 +95,6 @@ public class SparePartController {
         return ResponseEntity.ok(updatedPart);
     }
 
-
-
     @PreAuthorize("permitAll")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<BaseResponseDTO> deleteSparePart(
