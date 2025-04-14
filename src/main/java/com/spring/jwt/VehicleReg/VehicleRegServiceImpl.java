@@ -287,4 +287,18 @@ public class VehicleRegServiceImpl implements VehicleRegService {
         return vehicleRegRepository.findTopByVehicleNumber(vehicleNumber);
     }
 
+    public List<VehicleRegDto> getExpiredInsurances() {
+        return vehicleRegRepository.findByInsuredToBefore(LocalDate.now())
+                .stream()
+                .map(VehicleRegDto::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<VehicleRegDto> getActiveInsurances() {
+        return vehicleRegRepository.findByInsuredToGreaterThanEqual(LocalDate.now())
+                .stream()
+                .map(VehicleRegDto::new)
+                .collect(Collectors.toList());
+    }
+
 }
