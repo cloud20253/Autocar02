@@ -123,4 +123,14 @@ public class VehicleRegController {
         return ResponseEntity.ok(details);
     }
 
+    @GetMapping("/expired")
+    public List<VehicleRegDto> getExpiredInsuranceList() {
+        return vehicleRegService.getExpiredInsurances();
+    }
+
+    @GetMapping("/active")
+    public List<VehicleRegDto> getActiveInsuranceList() {
+        return vehicleRegService.getActiveInsurances();
+    }
+
 }

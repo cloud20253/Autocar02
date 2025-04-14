@@ -26,4 +26,8 @@ public interface VehicleRegService {
      List<VehicleRegDto> getVehicleRegByVehicleNumber(String vehicleNumber);
 
     VehicleRegDetailsDto getVehicleDetailsByNumber(String vehicleNumber);
+
+    List<VehicleRegDto> getActiveInsurances();
+
+    List<VehicleRegDto> getExpiredInsurances();
 }

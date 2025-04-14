@@ -45,6 +45,10 @@ public interface VehicleRegRepository extends JpaRepository<VehicleReg, Integer>
     VehicleRegDetailsDto findTopByVehicleNumber(@Param("vehicleNumber") String vehicleNumber);
 
 
+    List<VehicleReg> findByInsuredToBefore(LocalDate currentDate);
+    List<VehicleReg> findByInsuredToGreaterThanEqual(LocalDate currentDate);
+
+
 }
 
 
