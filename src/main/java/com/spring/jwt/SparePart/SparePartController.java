@@ -64,12 +64,11 @@ public class SparePartController {
             @RequestParam("sGST") Integer sGST,
             @RequestParam("cGST") Integer cGST,
             @RequestParam("totalGST") Integer totalGST,
-            @RequestParam("buyingPrice") Integer buyingPrice,
-            @RequestParam("vendor") String vendor)
+            @RequestParam("buyingPrice") Integer buyingPrice)
              {
 
         BaseResponseDTO response = sparePartService.addPart(
-                partName, description, manufacturer, price, partNumber, photos, sGST, cGST, totalGST, buyingPrice,vendor);
+                partName, description, manufacturer, price, partNumber, photos, sGST, cGST, totalGST, buyingPrice);
 
         return ResponseEntity.ok(response);
     }

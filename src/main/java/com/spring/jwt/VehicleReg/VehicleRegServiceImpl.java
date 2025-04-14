@@ -270,5 +270,21 @@ public class VehicleRegServiceImpl implements VehicleRegService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<VehicleRegDto> getVehicleRegByVehicleNumber(String vehicleNumber) {
+        List<VehicleReg> vehicleRegs = vehicleRegRepository.findByVehicleNumber(vehicleNumber);
+        if (vehicleRegs == null || vehicleRegs.isEmpty()) {
+            throw new RuntimeException("Vehicle not found with number: " + vehicleNumber);
+        }
+
+        return vehicleRegs.stream()
+                .map(VehicleRegDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public VehicleRegDetailsDto getVehicleDetailsByNumber(String vehicleNumber) {
+        return vehicleRegRepository.findTopByVehicleNumber(vehicleNumber);
+    }
 
 }

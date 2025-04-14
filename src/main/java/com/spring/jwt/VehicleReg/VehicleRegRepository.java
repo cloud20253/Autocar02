@@ -30,6 +30,21 @@ public interface VehicleRegRepository extends JpaRepository<VehicleReg, Integer>
             "GROUP BY LOWER(v2.vehicleNumber))")
     List<VehicleReg> findBySearchQuery(@Param("query") String query);
 
+    List<VehicleReg> findByVehicleNumber(String vehicleNumber);
+
+    @Query(value = """
+        SELECT 
+            vr.chasis_number AS chasisNumber,
+            vr.engine_number AS engineNumber,
+            vr.vehicle_variant AS vehicleVariant,
+            vr.number_plate_colour AS numberPlateColour
+        FROM vehicle_reg vr
+        WHERE vr.vehicle_number = :vehicleNumber
+        LIMIT 1
+        """, nativeQuery = true)
+    VehicleRegDetailsDto findTopByVehicleNumber(@Param("vehicleNumber") String vehicleNumber);
+
+
 }
 
 

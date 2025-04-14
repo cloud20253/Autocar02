@@ -127,6 +127,8 @@ public class AppConfig {
                 .requestMatchers("/services/**").permitAll()
                 .requestMatchers("/api/employees/**").permitAll()
                 .requestMatchers("/serviceUsed/**").permitAll()
+                .requestMatchers("/api/v1/customer/**").permitAll()
+                .requestMatchers("/api/vehicle-invoices/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .authenticationManager(manager)

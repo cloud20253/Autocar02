@@ -1,9 +1,8 @@
 package com.spring.jwt.VehicleReg.VehicleServiceUsed;
 
-import com.spring.jwt.SparePartTransaction.InvoiceJobcardHelper;
-import com.spring.jwt.SparePartTransaction.InvoiceJobcardNumbers;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,23 +11,14 @@ public class VehicleServicesUsedService {
 
     private final VehicleServicesUsedRepository repository;
 
-    private final InvoiceJobcardHelper invoiceJobcardHelper;
-
-    public VehicleServicesUsedService(VehicleServicesUsedRepository repository, InvoiceJobcardHelper invoiceJobcardHelper) {
+    public VehicleServicesUsedService(VehicleServicesUsedRepository repository ) {
         this.repository = repository;
-        this.invoiceJobcardHelper = invoiceJobcardHelper;
     }
 
     public VehicleServicesUsed createService(VehicleServicesUsed serviceUsed) {
-        if (serviceUsed.getVehicleId() != null) {
-            InvoiceJobcardNumbers numbers = invoiceJobcardHelper.getOrGenerateNumbers(serviceUsed.getVehicleId());
-            serviceUsed.setInvoiceNumber(numbers.getInvoiceNumber());
-            serviceUsed.setJobCardNumber(numbers.getJobCardNumber());
-
-            invoiceJobcardHelper.saveNumbersIfNotExists(serviceUsed.getVehicleId(), numbers.getInvoiceNumber(), numbers.getJobCardNumber());
-        }
         return repository.save(serviceUsed);
     }
+
 
     public VehicleServicesUsed getServiceById(Integer id) {
         return repository.findById(id)
@@ -54,6 +44,10 @@ public class VehicleServicesUsedService {
             return true;
         }
         return false;
+    }
+
+    public List<VehicleServicesUsed> getServicesByDateRange(LocalDate startDate, LocalDate endDate) {
+        return repository.findByDateBetween(startDate, endDate);
     }
 
 }

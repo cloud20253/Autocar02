@@ -2,6 +2,7 @@ package com.spring.jwt.SparePartTransaction;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.util.Optional;
 public interface SparePartTransactionRepository extends JpaRepository<SparePartTransaction, Integer> {
 
     List<SparePartTransaction> findByVehicleRegId(Integer vehicleRegID);
+
     List<SparePartTransaction> findByUserId(Integer userId);
 
     List<SparePartTransaction> findByTransactionDateBetween(LocalDateTime startDate, LocalDateTime endDate);
@@ -28,11 +30,15 @@ public interface SparePartTransactionRepository extends JpaRepository<SparePartT
 
     List<SparePartTransaction> findByPartNumber(String partNumber);
 
-    @Query("SELECT MAX(s.invoiceNumber) FROM SparePartTransaction s")
-    Integer findMaxInvoiceNumber();
 
-    @Query("SELECT MAX(s.jobCardNumber) FROM SparePartTransaction s")
-    Integer findMaxJobCardNumber();
+    @Query("SELECT t FROM SparePartTransaction t " +
+            "WHERE t.transactionType = :transactionType " +
+            "AND t.transactionDate BETWEEN :startDate AND :endDate")
+    List<SparePartTransaction> findByTransactionTypeAndTransactionDateBetween(
+            @Param("transactionType") TransactionType transactionType,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
 
-    List<SparePartTransaction> findByVehicleRegIdAndInvoiceNumberIsNotNull(Integer vehicleId);
 }
+
+

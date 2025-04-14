@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,9 +25,6 @@ public class SparePartTransactionServiceImpl implements SparePartTransactionServ
 
     @Autowired
     private SparePartRepo sparePartRepository;
-
-    @Autowired
-    private InvoiceJobcardHelper invoiceJobcardHelper;
 
     @Autowired
     private UserPartRepository userPartRepository;
@@ -130,14 +128,6 @@ public class SparePartTransactionServiceImpl implements SparePartTransactionServ
                 .billNo(transactionDto.getBillNo())
                 .name(transactionDto.getName())
                 .build();
-
-        if (transactionDto.getVehicleRegId() != null && transactionDto.getTransactionType() == TransactionType.DEBIT) {
-            InvoiceJobcardNumbers numbers = invoiceJobcardHelper.getOrGenerateNumbers(transactionDto.getVehicleRegId());
-            transaction.setInvoiceNumber(numbers.getInvoiceNumber());
-            transaction.setJobCardNumber(numbers.getJobCardNumber());
-
-            invoiceJobcardHelper.saveNumbersIfNotExists(transactionDto.getVehicleRegId(), numbers.getInvoiceNumber(), numbers.getJobCardNumber());
-        }
 
         transaction = transactionRepository.save(transaction);
         return toDto(transaction);
@@ -343,6 +333,36 @@ public class SparePartTransactionServiceImpl implements SparePartTransactionServ
         return transactions.stream().map(this::toDto).collect(Collectors.toList());
     }
 
+
+
+    @Override
+    public List<SparePartTransactionDto> getCreditTransactionsByDateRange(
+            TransactionType transactionType, LocalDateTime startDate, LocalDateTime endDate) {
+        if (transactionType == null) {
+            throw new IllegalArgumentException("Transaction type cannot be null.");
+        }
+        if (startDate == null || endDate == null) {
+            throw new IllegalArgumentException("Start date and end date cannot be null.");
+        }
+        if (endDate.isBefore(startDate)) {
+            throw new IllegalArgumentException("End date cannot be before start date.");
+        }
+
+        System.out.println("Filtering " + transactionType + " transactions between " + startDate + " and " + endDate);
+
+        List<SparePartTransaction> transactions = transactionRepository.findByTransactionTypeAndTransactionDateBetween(
+                transactionType, startDate, endDate);
+
+        if (transactions.isEmpty()) {
+            throw new RuntimeException("No transactions found for type: " + transactionType +
+                    ", between " + startDate + " and " + endDate);
+        }
+
+        return transactions.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+
+
     private SparePartTransactionDto toDto(SparePartTransaction transaction) {
         return SparePartTransactionDto.builder()
                 .sparePartTransactionId(transaction.getSparePartTransactionId())
@@ -360,8 +380,6 @@ public class SparePartTransactionServiceImpl implements SparePartTransactionServ
                 .quantity(transaction.getQuantity())
                 .transactionDate(transaction.getTransactionDate())
                 .userId(transaction.getUserId())
-                .invoiceNumber(transaction.getInvoiceNumber())
-                .jobCardNumber(transaction.getJobCardNumber())
                 .billNo(transaction.getBillNo())
                 .customerName(transaction.getCustomerName())
                 .name(transaction.getName())
