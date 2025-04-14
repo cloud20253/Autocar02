@@ -19,7 +19,7 @@ public class QuotationController {
     @Autowired
     private QuotationService quotationService;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<QuotationDTO> createQuotation(@RequestBody QuotationDTO quotationDTO) {
         QuotationDTO createdQuotation = quotationService.createQuotation(quotationDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdQuotation);

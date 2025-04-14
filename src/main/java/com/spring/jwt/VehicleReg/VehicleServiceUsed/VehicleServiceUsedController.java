@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -71,6 +72,22 @@ public class VehicleServiceUsedController {
                     .body("Error deleting service with ID " + id + ": " + ex.getMessage());
         }
     }
+
+    @GetMapping("/getByDateRange")
+    public ResponseEntity<List<VehicleServicesUsed>> getByDateRange(
+            @RequestParam("startDate") String startDateStr,
+            @RequestParam("endDate") String endDateStr
+    ) {
+        try {
+            LocalDate startDate = LocalDate.parse(startDateStr);
+            LocalDate endDate = LocalDate.parse(endDateStr);
+            List<VehicleServicesUsed> services = serviceService.getServicesByDateRange(startDate, endDate);
+            return ResponseEntity.ok(services);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
 
 
 }

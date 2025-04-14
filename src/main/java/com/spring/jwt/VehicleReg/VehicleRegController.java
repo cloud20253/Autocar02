@@ -68,7 +68,15 @@ public class VehicleRegController {
         }
     }
 
-
+    @GetMapping("/getByVehicleNumber")
+    public ResponseDto<List<VehicleRegDto>> getVehicleRegByVehicleNumber(@RequestParam String vehicleNumber) {
+        try {
+            List<VehicleRegDto> vehicleRegDtos = vehicleRegService.getVehicleRegByVehicleNumber(vehicleNumber);
+            return ResponseDto.success("Vehicle Registrations found for vehicle number", vehicleRegDtos);
+        } catch (Exception e) {
+            return ResponseDto.error("Vehicle Registration not found for vehicle number", e.getMessage());
+        }
+    }
 
     @DeleteMapping("/delete")
     public ResponseDto<String> deleteVehicleReg(@RequestParam Integer vehicleRegId) {
@@ -107,6 +115,12 @@ public class VehicleRegController {
         } catch (Exception e) {
             return ResponseDto.error("Vehicle Registration not found for appointment ID", e.getMessage());
         }
+    }
+
+    @GetMapping("/details/{vehicleNumber}")
+    public ResponseEntity<VehicleRegDetailsDto> getVehicleDetails(@PathVariable String vehicleNumber) {
+        VehicleRegDetailsDto details = vehicleRegService.getVehicleDetailsByNumber(vehicleNumber);
+        return ResponseEntity.ok(details);
     }
 
 }

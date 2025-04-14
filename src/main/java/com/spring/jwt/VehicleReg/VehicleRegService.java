@@ -22,4 +22,8 @@ public interface VehicleRegService {
     VehicleRegDto getVehicleRegByAppointmentId(Integer appointmentId);
 
     List<VehicleRegDto> searchVehicles(String query);
+
+     List<VehicleRegDto> getVehicleRegByVehicleNumber(String vehicleNumber);
+
+    VehicleRegDetailsDto getVehicleDetailsByNumber(String vehicleNumber);
 }

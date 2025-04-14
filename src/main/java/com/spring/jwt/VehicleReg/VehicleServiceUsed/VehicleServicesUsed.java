@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Setter
@@ -17,6 +19,8 @@ public class VehicleServicesUsed {
 
     private Integer quantity;
 
+    private LocalDate date;
+
     private Integer Rate;
 
     private Integer cGST;
@@ -24,10 +28,4 @@ public class VehicleServicesUsed {
     private Integer sGST;
 
     private Integer vehicleId;
-
-    @Column(name = "InvoiceNumber")
-    private Integer invoiceNumber;
-
-    @Column(name = "JobCardNumber")
-    private Integer jobCardNumber;
 }

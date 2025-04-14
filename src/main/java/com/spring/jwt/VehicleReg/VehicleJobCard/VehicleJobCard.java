@@ -7,6 +7,8 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Setter
@@ -27,6 +29,8 @@ public class VehicleJobCard {
     private String workShopNote;
 
     private String jobStatus;
+
+    private LocalDate date;
 
     private String jobType;
 
